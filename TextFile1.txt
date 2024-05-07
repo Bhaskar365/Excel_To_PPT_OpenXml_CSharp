@@ -1,0 +1,459 @@
+﻿
+
+//using DocumentFormat.OpenXml.Packaging;
+//using DocumentFormat.OpenXml.Presentation;
+//using DocumentFormat.OpenXml;
+//using System;
+//using System.IO;
+//using System.Runtime.Serialization.Formatters.Binary;
+
+//using DocumentFormat.OpenXml.Drawing;
+//using DocumentFormat.OpenXml.Drawing.Charts;
+
+//using OfficeOpenXml;
+//using D = DocumentFormat.OpenXml.Drawing;
+//using P = DocumentFormat.OpenXml.Presentation;
+//using C = DocumentFormat.OpenXml.Drawing.Charts;
+//using Cs = DocumentFormat.OpenXml.Office2013.Drawing.ChartStyle;
+//using A = DocumentFormat.OpenXml.Drawing;
+//using DocumentFormat.OpenXml.Spreadsheet;
+//using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+
+//string excelPath;
+//string filepath;
+
+//void CreatePresentation()
+//{
+//    excelPath = "C:\\Testing\\Template_Creation\\Test_Excel_To_PPT\\NewFolder\\sample.xlsx";
+//    filepath = "C:\\Testing\\Template_Creation\\Test_Excel_To_PPT\\NewFolder\\sample.pptx";
+
+//    string base64ExcelData = ConvertExcelToBase64(excelPath);
+
+//    if (!string.IsNullOrEmpty(base64ExcelData))
+//    {
+//        CreatePresentationWithEmbeddedExcel(base64ExcelData);
+//    }
+//}
+
+//void CreatePresentationWithEmbeddedExcel(string base64ExcelData)
+//{
+//    using (PresentationDocument presentationDoc = PresentationDocument.Create(filepath, PresentationDocumentType.Presentation))
+//    {
+//        PresentationPart presentationPart = presentationDoc.AddPresentationPart();
+//        presentationPart.Presentation = new Presentation();
+
+//        CreatePresentationParts(presentationPart, base64ExcelData);
+//    }
+//}
+
+//void CreatePresentationParts(PresentationPart presentationPart, string base64ExcelData)
+//{
+//    // Create presentation parts here...
+
+//    SlidePart slidePart1 = CreateSlidePart(presentationPart);
+//    SlideLayoutPart slideLayoutPart1 = CreateSlideLayoutPart(slidePart1);
+//    SlideMasterPart slideMasterPart1 = CreateSlideMasterPart(slideLayoutPart1);
+//    ThemePart themePart1 = CreateTheme(slideMasterPart1);
+
+//    ChartPart chartPart1 = slidePart1.AddNewPart<ChartPart>("rId3");
+//    GenerateChartPart2Content(chartPart1);
+
+//    EmbeddedPackagePart embeddedPackagePart1 = chartPart1.AddNewPart<EmbeddedPackagePart>("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "rId3");
+//    GenerateEmbeddedPackagePart1Content(embeddedPackagePart1, base64ExcelData);
+
+//    ChartColorStylePart chartColorStylePart1 = chartPart1.AddNewPart<ChartColorStylePart>("rId2");
+//    GenerateChartColorStylePart1Content(chartColorStylePart1);
+
+//    ChartStylePart chartStylePart1 = chartPart1.AddNewPart<ChartStylePart>("rId1");
+//    //GenerateChartStylePart1Content(chartStylePart1);
+
+//    // Add other parts to the presentation...
+
+//    slideMasterPart1.AddPart(slideLayoutPart1, "rId1");
+//    presentationPart.AddPart(slideMasterPart1, "rId1");
+//    presentationPart.AddPart(themePart1, "rId5");
+//}
+
+//string ConvertExcelToBase64(string excelFilePath)
+//{
+//    try
+//    {
+//        byte[] excelBytes = File.ReadAllBytes(excelFilePath);
+//        string base64String = Convert.ToBase64String(excelBytes);
+//        return base64String;
+//    }
+//    catch (Exception ex)
+//    {
+//        Console.WriteLine("Error converting Excel to base64: " + ex.Message);
+//        return null;
+//    }
+//}
+
+//void GenerateEmbeddedPackagePart1Content(EmbeddedPackagePart embeddedPackagePart1, string base64ExcelData)
+//{
+//    byte[] excelBytes = Convert.FromBase64String(base64ExcelData);
+//    using (MemoryStream stream = new MemoryStream(excelBytes))
+//    {
+//        embeddedPackagePart1.FeedData(stream);
+//    }
+//}
+
+//SlidePart CreateSlidePart(PresentationPart presentationPart)
+//{
+//    SlidePart slidePart1 = presentationPart.AddNewPart<SlidePart>("rId2");
+//    slidePart1.Slide = new Slide(
+//            new CommonSlideData(
+//                new ShapeTree(
+//                    new P.NonVisualGroupShapeProperties(
+//                        new P.NonVisualDrawingProperties() { Id = (UInt32Value)1U, Name = "" },
+//                        new P.NonVisualGroupShapeDrawingProperties(),
+//                        new ApplicationNonVisualDrawingProperties()),
+//                    new GroupShapeProperties(new TransformGroup()),
+//                    new P.Shape(
+//                        new P.NonVisualShapeProperties(
+//                            new P.NonVisualDrawingProperties() { Id = (UInt32Value)2U, Name = "Title 1" },
+//                            new P.NonVisualShapeDrawingProperties(new ShapeLocks() { NoGrouping = true }),
+//                            new ApplicationNonVisualDrawingProperties(new PlaceholderShape())),
+//                        new P.ShapeProperties(),
+//                        new P.TextBody(
+//                            new BodyProperties(),
+//                            new ListStyle(),
+//                            new Paragraph(new EndParagraphRunProperties() { Language = "en-US" }))))),
+//            new C.ColorMapOverride(new MasterColorMapping()));
+//    return slidePart1;
+//}
+
+//SlideLayoutPart CreateSlideLayoutPart(SlidePart slidePart1)
+//{
+//    SlideLayoutPart slideLayoutPart1 = slidePart1.AddNewPart<SlideLayoutPart>("rId1");
+//    SlideLayout slideLayout = new SlideLayout(
+//    new CommonSlideData(new ShapeTree(
+//      new P.NonVisualGroupShapeProperties(
+//      new P.NonVisualDrawingProperties() { Id = (UInt32Value)1U, Name = "" },
+//      new P.NonVisualGroupShapeDrawingProperties(),
+//      new ApplicationNonVisualDrawingProperties()),
+//      new GroupShapeProperties(new TransformGroup()),
+//      new P.Shape(
+//      new P.NonVisualShapeProperties(
+//        new P.NonVisualDrawingProperties() { Id = (UInt32Value)2U, Name = "" },
+//        new P.NonVisualShapeDrawingProperties(new ShapeLocks() { NoGrouping = true }),
+//        new ApplicationNonVisualDrawingProperties(new PlaceholderShape())),
+//      new P.ShapeProperties(),
+//      new P.TextBody(
+//        new BodyProperties(),
+//        new ListStyle(),
+//        new Paragraph(new EndParagraphRunProperties()))))),
+//    new C.ColorMapOverride(new MasterColorMapping()));
+//    slideLayoutPart1.SlideLayout = slideLayout;
+//    return slideLayoutPart1;
+//}
+
+//SlideMasterPart CreateSlideMasterPart(SlideLayoutPart slideLayoutPart1)
+//{
+//    SlideMasterPart slideMasterPart1 = slideLayoutPart1.AddNewPart<SlideMasterPart>("rId1");
+//    SlideMaster slideMaster = new SlideMaster(
+//    new CommonSlideData(new ShapeTree(
+//      new P.NonVisualGroupShapeProperties(
+//      new P.NonVisualDrawingProperties() { Id = (UInt32Value)1U, Name = "" },
+//      new P.NonVisualGroupShapeDrawingProperties(),
+//      new ApplicationNonVisualDrawingProperties()),
+//      new GroupShapeProperties(new TransformGroup()),
+//      new P.Shape(
+//      new P.NonVisualShapeProperties(
+//        new P.NonVisualDrawingProperties() { Id = (UInt32Value)2U, Name = "Title Placeholder 1" },
+//        new P.NonVisualShapeDrawingProperties(new ShapeLocks() { NoGrouping = true }),
+//        new ApplicationNonVisualDrawingProperties(new PlaceholderShape() { Type = PlaceholderValues.Title })),
+//      new P.ShapeProperties(),
+//      new P.TextBody(
+//        new BodyProperties(),
+//        new ListStyle(),
+//        new Paragraph())))),
+//    new P.ColorMap() { Background1 = D.ColorSchemeIndexValues.Light1, Text1 = D.ColorSchemeIndexValues.Dark1, Background2 = D.ColorSchemeIndexValues.Light2, Text2 = D.ColorSchemeIndexValues.Dark2, Accent1 = D.ColorSchemeIndexValues.Accent1, Accent2 = D.ColorSchemeIndexValues.Accent2, Accent3 = D.ColorSchemeIndexValues.Accent3, Accent4 = D.ColorSchemeIndexValues.Accent4, Accent5 = D.ColorSchemeIndexValues.Accent5, Accent6 = D.ColorSchemeIndexValues.Accent6, Hyperlink = D.ColorSchemeIndexValues.Hyperlink, FollowedHyperlink = D.ColorSchemeIndexValues.FollowedHyperlink },
+//    new SlideLayoutIdList(new SlideLayoutId() { Id = (UInt32Value)2147483649U, RelationshipId = "rId1" }),
+//    new TextStyles(new TitleStyle(), new BodyStyle(), new OtherStyle()));
+//    slideMasterPart1.SlideMaster = slideMaster;
+
+//    return slideMasterPart1;
+//}
+
+//ThemePart CreateTheme(SlideMasterPart slideMasterPart1)
+//{
+//    ThemePart themePart1 = slideMasterPart1.AddNewPart<ThemePart>("rId5");
+//    D.Theme theme1 = new D.Theme() { Name = "Office Theme" };
+
+//    D.ThemeElements themeElements1 = new D.ThemeElements(
+//    new D.ColorScheme(
+//      new D.Dark1Color(new D.SystemColor() { Val = D.SystemColorValues.WindowText, LastColor = "000000" }),
+//      new D.Light1Color(new D.SystemColor() { Val = D.SystemColorValues.Window, LastColor = "FFFFFF" }),
+//      new D.Dark2Color(new D.RgbColorModelHex() { Val = "1F497D" }),
+//      new D.Light2Color(new D.RgbColorModelHex() { Val = "EEECE1" }),
+//      new D.Accent1Color(new D.RgbColorModelHex() { Val = "4F81BD" }),
+//      new D.Accent2Color(new D.RgbColorModelHex() { Val = "C0504D" }),
+//      new D.Accent3Color(new D.RgbColorModelHex() { Val = "9BBB59" }),
+//      new D.Accent4Color(new D.RgbColorModelHex() { Val = "8064A2" }),
+//      new D.Accent5Color(new D.RgbColorModelHex() { Val = "4BACC6" }),
+//      new D.Accent6Color(new D.RgbColorModelHex() { Val = "F79646" }),
+//      new D.Hyperlink(new D.RgbColorModelHex() { Val = "0000FF" }),
+//      new D.FollowedHyperlinkColor(new D.RgbColorModelHex() { Val = "800080" }))
+//    { Name = "Office" },
+//      new D.FontScheme(
+//      new D.MajorFont(
+//      new D.LatinFont() { Typeface = "Calibri" },
+//      new D.EastAsianFont() { Typeface = "" },
+//      new D.ComplexScriptFont() { Typeface = "" }),
+//      new D.MinorFont(
+//      new D.LatinFont() { Typeface = "Calibri" },
+//      new D.EastAsianFont() { Typeface = "" },
+//      new D.ComplexScriptFont() { Typeface = "" }))
+//      { Name = "Office" },
+//      new D.FormatScheme(
+//      new D.FillStyleList(
+//      new D.SolidFill(new D.SchemeColor() { Val = D.SchemeColorValues.PhColor }),
+//      new D.GradientFill(
+//        new D.GradientStopList(
+//        new D.GradientStop(new D.SchemeColor(new D.Tint() { Val = 50000 },
+//          new D.SaturationModulation() { Val = 300000 })
+//        { Val = D.SchemeColorValues.PhColor })
+//        { Position = 0 },
+//        new D.GradientStop(new D.SchemeColor(new D.Tint() { Val = 37000 },
+//         new D.SaturationModulation() { Val = 300000 })
+//        { Val = D.SchemeColorValues.PhColor })
+//        { Position = 35000 },
+//        new D.GradientStop(new D.SchemeColor(new D.Tint() { Val = 15000 },
+//         new D.SaturationModulation() { Val = 350000 })
+//        { Val = D.SchemeColorValues.PhColor })
+//        { Position = 100000 }
+//        ),
+//        new D.LinearGradientFill() { Angle = 16200000, Scaled = true }),
+//      new D.NoFill(),
+//      new D.PatternFill(),
+//      new D.GroupFill()),
+//      new D.LineStyleList(
+//      new D.Outline(
+//        new D.SolidFill(
+//        new D.SchemeColor(
+//          new D.Shade() { Val = 95000 },
+//          new D.SaturationModulation() { Val = 105000 })
+//        { Val = D.SchemeColorValues.PhColor }),
+//        new D.PresetDash() { Val = D.PresetLineDashValues.Solid })
+//      {
+//          Width = 9525,
+//          CapType = D.LineCapValues.Flat,
+//          CompoundLineType = D.CompoundLineValues.Single,
+//          Alignment = D.PenAlignmentValues.Center
+//      },
+//      new D.Outline(
+//        new D.SolidFill(
+//        new D.SchemeColor(
+//          new D.Shade() { Val = 95000 },
+//          new D.SaturationModulation() { Val = 105000 })
+//        { Val = D.SchemeColorValues.PhColor }),
+//        new D.PresetDash() { Val = D.PresetLineDashValues.Solid })
+//      {
+//          Width = 9525,
+//          CapType = D.LineCapValues.Flat,
+//          CompoundLineType = D.CompoundLineValues.Single,
+//          Alignment = D.PenAlignmentValues.Center
+//      },
+//      new D.Outline(
+//        new D.SolidFill(
+//        new D.SchemeColor(
+//          new D.Shade() { Val = 95000 },
+//          new D.SaturationModulation() { Val = 105000 })
+//        { Val = D.SchemeColorValues.PhColor }),
+//        new D.PresetDash() { Val = D.PresetLineDashValues.Solid })
+//      {
+//          Width = 9525,
+//          CapType = D.LineCapValues.Flat,
+//          CompoundLineType = D.CompoundLineValues.Single,
+//          Alignment = D.PenAlignmentValues.Center
+//      }),
+//      new D.EffectStyleList(
+//      new D.EffectStyle(
+//        new D.EffectList(
+//        new D.OuterShadow(
+//          new D.RgbColorModelHex(
+//          new D.Alpha() { Val = 38000 })
+//          { Val = "000000" })
+//        { BlurRadius = 40000L, Distance = 20000L, Direction = 5400000, RotateWithShape = false })),
+//      new D.EffectStyle(
+//        new D.EffectList(
+//        new D.OuterShadow(
+//          new D.RgbColorModelHex(
+//          new D.Alpha() { Val = 38000 })
+//          { Val = "000000" })
+//        { BlurRadius = 40000L, Distance = 20000L, Direction = 5400000, RotateWithShape = false })),
+//      new D.EffectStyle(
+//        new D.EffectList(
+//        new D.OuterShadow(
+//          new D.RgbColorModelHex(
+//          new D.Alpha() { Val = 38000 })
+//          { Val = "000000" })
+//        { BlurRadius = 40000L, Distance = 20000L, Direction = 5400000, RotateWithShape = false }))),
+//      new D.BackgroundFillStyleList(
+//      new D.SolidFill(new D.SchemeColor() { Val = D.SchemeColorValues.PhColor }),
+//      new D.GradientFill(
+//        new D.GradientStopList(
+//        new D.GradientStop(
+//          new D.SchemeColor(new D.Tint() { Val = 50000 },
+//            new D.SaturationModulation() { Val = 300000 })
+//          { Val = D.SchemeColorValues.PhColor })
+//        { Position = 0 },
+//        new D.GradientStop(
+//          new D.SchemeColor(new D.Tint() { Val = 50000 },
+//            new D.SaturationModulation() { Val = 300000 })
+//          { Val = D.SchemeColorValues.PhColor })
+//        { Position = 0 },
+//        new D.GradientStop(
+//          new D.SchemeColor(new D.Tint() { Val = 50000 },
+//            new D.SaturationModulation() { Val = 300000 })
+//          { Val = D.SchemeColorValues.PhColor })
+//        { Position = 0 }),
+//        new D.LinearGradientFill() { Angle = 16200000, Scaled = true }),
+//      new D.GradientFill(
+//        new D.GradientStopList(
+//        new D.GradientStop(
+//          new D.SchemeColor(new D.Tint() { Val = 50000 },
+//            new D.SaturationModulation() { Val = 300000 })
+//          { Val = D.SchemeColorValues.PhColor })
+//        { Position = 0 },
+//        new D.GradientStop(
+//          new D.SchemeColor(new D.Tint() { Val = 50000 },
+//            new D.SaturationModulation() { Val = 300000 })
+//          { Val = D.SchemeColorValues.PhColor })
+//        { Position = 0 }),
+//        new D.LinearGradientFill() { Angle = 16200000, Scaled = true })))
+//      { Name = "Office" });
+
+//    theme1.Append(themeElements1);
+//    theme1.Append(new D.ObjectDefaults());
+//    theme1.Append(new D.ExtraColorSchemeList());
+
+//    themePart1.Theme = theme1;
+//    return themePart1;
+//}
+
+//void GenerateChartColorStylePart1Content(ChartColorStylePart chartColorStylePart1)
+//{
+//    Cs.ColorStyle colorStyle1 = new Cs.ColorStyle() { Method = "cycle", Id = (UInt32Value)10U };
+//    colorStyle1.AddNamespaceDeclaration("cs", "http://schemas.microsoft.com/office/drawing/2012/chartStyle");
+//    colorStyle1.AddNamespaceDeclaration("a", "http://schemas.openxmlformats.org/drawingml/2006/main");
+//    A.SchemeColor schemeColor19 = new A.SchemeColor() { Val = A.SchemeColorValues.Accent1 };
+//    A.SchemeColor schemeColor20 = new A.SchemeColor() { Val = A.SchemeColorValues.Accent2 };
+//    A.SchemeColor schemeColor21 = new A.SchemeColor() { Val = A.SchemeColorValues.Accent3 };
+//    A.SchemeColor schemeColor22 = new A.SchemeColor() { Val = A.SchemeColorValues.Accent4 };
+//    A.SchemeColor schemeColor23 = new A.SchemeColor() { Val = A.SchemeColorValues.Accent5 };
+//    A.SchemeColor schemeColor24 = new A.SchemeColor() { Val = A.SchemeColorValues.Accent6 };
+//    Cs.ColorStyleVariation colorStyleVariation1 = new Cs.ColorStyleVariation();
+
+//    Cs.ColorStyleVariation colorStyleVariation2 = new Cs.ColorStyleVariation();
+//    A.LuminanceModulation luminanceModulation7 = new A.LuminanceModulation() { Val = 60000 };
+
+//    colorStyleVariation2.Append(luminanceModulation7);
+
+//    Cs.ColorStyleVariation colorStyleVariation3 = new Cs.ColorStyleVariation();
+//    A.LuminanceModulation luminanceModulation8 = new A.LuminanceModulation() { Val = 80000 };
+//    A.LuminanceOffset luminanceOffset7 = new A.LuminanceOffset() { Val = 20000 };
+
+//    colorStyleVariation3.Append(luminanceModulation8);
+//    colorStyleVariation3.Append(luminanceOffset7);
+
+//    Cs.ColorStyleVariation colorStyleVariation4 = new Cs.ColorStyleVariation();
+//    A.LuminanceModulation luminanceModulation9 = new A.LuminanceModulation() { Val = 80000 };
+
+//    colorStyleVariation4.Append(luminanceModulation9);
+
+//    Cs.ColorStyleVariation colorStyleVariation5 = new Cs.ColorStyleVariation();
+//    A.LuminanceModulation luminanceModulation10 = new A.LuminanceModulation() { Val = 60000 };
+//    A.LuminanceOffset luminanceOffset8 = new A.LuminanceOffset() { Val = 40000 };
+
+//    colorStyleVariation5.Append(luminanceModulation10);
+//    colorStyleVariation5.Append(luminanceOffset8);
+
+//    Cs.ColorStyleVariation colorStyleVariation6 = new Cs.ColorStyleVariation();
+//    A.LuminanceModulation luminanceModulation11 = new A.LuminanceModulation() { Val = 50000 };
+
+//    colorStyleVariation6.Append(luminanceModulation11);
+
+//    Cs.ColorStyleVariation colorStyleVariation7 = new Cs.ColorStyleVariation();
+//    A.LuminanceModulation luminanceModulation12 = new A.LuminanceModulation() { Val = 70000 };
+//    A.LuminanceOffset luminanceOffset9 = new A.LuminanceOffset() { Val = 30000 };
+
+//    colorStyleVariation7.Append(luminanceModulation12);
+//    colorStyleVariation7.Append(luminanceOffset9);
+
+//    Cs.ColorStyleVariation colorStyleVariation8 = new Cs.ColorStyleVariation();
+//    A.LuminanceModulation luminanceModulation13 = new A.LuminanceModulation() { Val = 70000 };
+
+//    colorStyleVariation8.Append(luminanceModulation13);
+
+//    Cs.ColorStyleVariation colorStyleVariation9 = new Cs.ColorStyleVariation();
+//    A.LuminanceModulation luminanceModulation14 = new A.LuminanceModulation() { Val = 50000 };
+//    A.LuminanceOffset luminanceOffset10 = new A.LuminanceOffset() { Val = 50000 };
+
+//    colorStyleVariation9.Append(luminanceModulation14);
+//    colorStyleVariation9.Append(luminanceOffset10);
+
+//    colorStyle1.Append(schemeColor19);
+//    colorStyle1.Append(schemeColor20);
+//    colorStyle1.Append(schemeColor21);
+//    colorStyle1.Append(schemeColor22);
+//    colorStyle1.Append(schemeColor23);
+//    colorStyle1.Append(schemeColor24);
+//    colorStyle1.Append(colorStyleVariation1);
+//    colorStyle1.Append(colorStyleVariation2);
+//    colorStyle1.Append(colorStyleVariation3);
+//    colorStyle1.Append(colorStyleVariation4);
+//    colorStyle1.Append(colorStyleVariation5);
+//    colorStyle1.Append(colorStyleVariation6);
+//    colorStyle1.Append(colorStyleVariation7);
+//    colorStyle1.Append(colorStyleVariation8);
+//    colorStyle1.Append(colorStyleVariation9);
+
+//    chartColorStylePart1.ColorStyle = colorStyle1;
+//}
+
+//void GenerateChartPart2Content(ChartPart chartPart)
+//{
+//    // Create a new instance of ChartPart content
+//    C.ChartSpace chartSpace = new C.ChartSpace();
+//    chartSpace.AddNamespaceDeclaration("c", "http://schemas.openxmlformats.org/drawingml/2006/chart");
+//    chartPart.ChartSpace = chartSpace;
+
+//    // Create the chart
+//    C.Chart chart = new C.Chart();
+//    C.PlotArea plotArea = new C.PlotArea();
+
+//    // Create a bar chart
+//    BarChart barChart = new BarChart();
+//    barChart.Append(new BarDirection() { Val = new EnumValue<BarDirectionValues>(BarDirectionValues.Column) });
+
+//    for (int col = 1; col < excelData.GetLength(1); col++) // Skip the first column which contains categories
+//    {
+//        BarChartSeries barChartSeries = new BarChartSeries();
+
+//        // Set series data (categories)
+//        CategoryAxisData categoryAxisData = new CategoryAxisData();
+//        StringReference stringReference = new StringReference();
+//        C.Formula formula = new C.Formula();
+//        formula.Text = $"Sheet1!${Convert.ToChar(65 + col)}$1:${Convert.ToChar(65 + col)}{excelData.GetLength(0) + 1}"; // Assuming data starts from A1
+//        stringReference.Append(formula);
+//        categoryAxisData.Append(stringReference);
+//        barChartSeries.Append(categoryAxisData);
+
+//        // Set series values
+//        D.Charts.Values values = new D.Charts.Values();
+//        NumberReference numberReference = new NumberReference();
+//        C.Formula formula2 = new C.Formula();
+//        formula2.Text = $"Sheet1!${Convert.ToChar(65 + col)}$2:${Convert.ToChar(65 + col)}{excelData.GetLength(0) + 1}"; // Assuming data starts from A2
+//        numberReference.Append(formula2);
+//        values.Append(numberReference);
+//        barChartSeries.Append(values);
+
+//        barChart.Append(barChartSeries);
+//    }
+
+//    plotArea.Append(barChart);
+//    chart.Append(plotArea);
+//    chartSpace.Append(chart);
+//}
